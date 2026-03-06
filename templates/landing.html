@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NoteGenie — AI-Powered Research & Smart Notes</title>
+    <meta name="description"
+        content="Supercharge your research with AI-driven insights and organized note-taking. Transform scattered thoughts into structured knowledge instantly." />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#5048e5",
+                        "primary-light": "#7c75f0",
+                        "primary-dark": "#3730a3",
+                        "accent": "#06b6d4",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        * {
+            scroll-behavior: smooth;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-12px)
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        @keyframes pulse-glow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(80, 72, 229, 0.3)
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(80, 72, 229, 0.6)
+            }
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%
+            }
+
+            50% {
+                background-position: 100% 50%
+            }
+
+            100% {
+                background-position: 0% 50%
+            }
+        }
+
+        .float-anim {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .delay-100 {
+            animation-delay: 0.1s;
+        }
+
+        .delay-200 {
+            animation-delay: 0.2s;
+        }
+
+        .delay-300 {
+            animation-delay: 0.3s;
+        }
+
+        .delay-400 {
+            animation-delay: 0.4s;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #5048e5, #06b6d4, #8b5cf6);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            animation: gradient 4s ease infinite;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #f0f0ff 0%, #e8e6ff 30%, #f0faff 60%, #fff 100%);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .feature-icon {
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.15);
+        }
+
+        .cta-gradient {
+            background: linear-gradient(135deg, #5048e5 0%, #3730a3 50%, #5048e5 100%);
+            background-size: 200% auto;
+            animation: gradient 3s ease infinite;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body class="bg-white font-display text-slate-900 antialiased">
+
+    <!-- ═══ HEADER ═══ -->
+    <header id="header" class="fixed top-0 w-full z-50 transition-all duration-300"
+        style="background: rgba(255,255,255,0.85); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(0,0,0,0.06);">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
+            <a href="/" class="flex items-center gap-2.5 group" id="logo-link">
+                <div
+                    class="size-9 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-shadow">
+                    <span class="material-symbols-outlined text-xl"
+                        style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                </div>
+                <span class="text-xl font-extrabold tracking-tight">NoteGenie</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-8">
+                <a href="#features" class="text-sm font-medium text-slate-500 hover:text-primary transition-colors"
+                    id="nav-features">Features</a>
+                <a href="#how-it-works" class="text-sm font-medium text-slate-500 hover:text-primary transition-colors"
+                    id="nav-how">How It Works</a>
+                <a href="#testimonials" class="text-sm font-medium text-slate-500 hover:text-primary transition-colors"
+                    id="nav-testimonials">Testimonials</a>
+            </nav>
+            <div class="flex items-center gap-3">
+                <a href="/login"
+                    class="text-sm font-semibold text-slate-600 hover:text-primary transition-colors px-4 py-2"
+                    id="nav-login">Login</a>
+                <a href="/login"
+                    class="text-sm font-bold text-white bg-primary hover:bg-primary-dark px-5 py-2.5 rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all transform hover:scale-105"
+                    id="nav-cta">
+                    Get Started
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══ HERO ═══ -->
+    <section class="hero-gradient relative overflow-hidden pt-28 pb-20 lg:pt-36 lg:pb-28">
+        <!-- Decorative blobs -->
+        <div class="blob bg-primary/30 w-96 h-96 -top-20 -left-20"></div>
+        <div class="blob bg-cyan-400/20 w-80 h-80 top-40 right-10"></div>
+        <div class="blob bg-violet-400/20 w-72 h-72 bottom-0 left-1/3"></div>
+
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <!-- Left — Copy -->
+                <div>
+                    <div
+                        class="fade-in-up inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-wide mb-6">
+                        <span class="material-symbols-outlined text-sm"
+                            style="font-variation-settings:'FILL' 1">bolt</span>
+                        NEW: RESEARCH ASSISTANT 2.0
+                    </div>
+                    <h1
+                        class="fade-in-up delay-100 text-4xl sm:text-5xl lg:text-6xl font-black leading-[1.1] tracking-tight mb-6">
+                        AI-Powered Research &<br>
+                        <span class="gradient-text">Smart Notes</span>
+                    </h1>
+                    <p class="fade-in-up delay-200 text-lg text-slate-600 leading-relaxed max-w-lg mb-8">
+                        Supercharge your research process with AI-driven insights and organized note-taking. Transform
+                        scattered thoughts into structured knowledge instantly.
+                    </p>
+                    <div class="fade-in-up delay-300 flex flex-wrap gap-4 mb-10">
+                        <a href="/login"
+                            class="inline-flex items-center gap-2 px-7 py-3.5 bg-primary text-white font-bold rounded-xl shadow-xl shadow-primary/30 hover:shadow-primary/50 hover:bg-primary-dark transition-all transform hover:scale-105"
+                            id="hero-cta">
+                            Get Started Free
+                            <span class="material-symbols-outlined text-lg">arrow_forward</span>
+                        </a>
+                        <a href="#how-it-works"
+                            class="inline-flex items-center gap-2 px-7 py-3.5 bg-white text-slate-700 font-bold rounded-xl shadow-lg hover:shadow-xl border border-slate-200 hover:border-primary/30 transition-all"
+                            id="hero-demo">
+                            Try Demo
+                        </a>
+                    </div>
+                    <div class="fade-in-up delay-400 flex items-center gap-3">
+                        <div class="flex -space-x-2">
+                            <div
+                                class="w-8 h-8 rounded-full bg-gradient-to-br from-violet-400 to-purple-600 border-2 border-white">
+                            </div>
+                            <div
+                                class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600 border-2 border-white">
+                            </div>
+                            <div
+                                class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 border-2 border-white">
+                            </div>
+                        </div>
+                        <span class="text-sm text-slate-500">Joined by <strong class="text-slate-700">10,000+</strong>
+                            researchers</span>
+                    </div>
+                </div>
+                <!-- Right — Demo Card -->
+                <div class="fade-in-up delay-300 float-anim hidden lg:block">
+                    <div class="glass-card rounded-2xl shadow-2xl p-6 max-w-md ml-auto">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-amber-400"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                        </div>
+                        <div class="space-y-3 mb-4">
+                            <div class="h-3 bg-slate-200 rounded-full w-4/5"></div>
+                            <div class="h-3 bg-slate-200 rounded-full w-3/5"></div>
+                            <div class="h-3 bg-slate-200 rounded-full w-2/3"></div>
+                        </div>
+                        <div class="bg-primary/5 border border-primary/20 rounded-xl p-4 flex items-start gap-3">
+                            <span class="material-symbols-outlined text-primary mt-0.5"
+                                style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                            <div>
+                                <div class="text-xs font-bold text-primary mb-1">AI SUMMARY</div>
+                                <div class="text-sm text-slate-600 leading-relaxed">
+                                    Key findings suggest a 40% improvement in comprehension when notes are
+                                    AI-organized...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FEATURES ═══ -->
+    <section id="features" class="py-20 lg:py-28 bg-white relative">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <div class="text-primary text-sm font-extrabold tracking-widest uppercase mb-3">Powerful Features</div>
+                <h2 class="text-3xl sm:text-4xl font-black tracking-tight mb-4">Smarter workflow for modern researchers
+                </h2>
+                <p class="text-slate-500 text-lg">Our suite of AI tools helps you focus on what matters most: your
+                    ideas.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card group p-8 rounded-2xl border border-slate-200 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 cursor-default"
+                    id="feature-summarize">
+                    <div class="feature-icon w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-primary text-2xl"
+                            style="font-variation-settings:'FILL' 1">summarize</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">AI Summarization</h3>
+                    <p class="text-slate-500 leading-relaxed">Condense long papers and documents into key takeaways and
+                        actionable insights in seconds.</p>
+                </div>
+                <!-- Feature 2 -->
+                <div class="feature-card group p-8 rounded-2xl border border-slate-200 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 cursor-default"
+                    id="feature-linking">
+                    <div class="feature-icon w-14 h-14 rounded-2xl bg-violet-100 flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-violet-600 text-2xl"
+                            style="font-variation-settings:'FILL' 1">hub</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Contextual Linking</h3>
+                    <p class="text-slate-500 leading-relaxed">Automatically connect related concepts across your entire
+                        library using semantic intelligence.</p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="feature-card group p-8 rounded-2xl border border-slate-200 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 cursor-default"
+                    id="feature-citations">
+                    <div class="feature-icon w-14 h-14 rounded-2xl bg-cyan-100 flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-cyan-600 text-2xl"
+                            style="font-variation-settings:'FILL' 1">format_quote</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">Instant Citations</h3>
+                    <p class="text-slate-500 leading-relaxed">Generate accurate citations for any source with one click
+                        in over 1,000 different styles.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ HOW IT WORKS ═══ -->
+    <section id="how-it-works" class="py-20 lg:py-28 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-3xl sm:text-4xl font-black tracking-tight mb-4">How it Works</h2>
+                <p class="text-slate-500 text-lg">Streamline your research in three simple steps</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-12">
+                <!-- Step 1 -->
+                <div class="text-center group" id="step-upload">
+                    <div
+                        class="w-16 h-16 mx-auto rounded-2xl bg-primary text-white flex items-center justify-center text-2xl font-black mb-6 shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform">
+                        1</div>
+                    <h3 class="text-xl font-bold mb-3">Upload Sources</h3>
+                    <p class="text-slate-500">Drag and drop PDFs, links, or notes directly into your workspace.</p>
+                </div>
+                <!-- Step 2 -->
+                <div class="text-center group" id="step-analyze">
+                    <div
+                        class="w-16 h-16 mx-auto rounded-2xl bg-violet-600 text-white flex items-center justify-center text-2xl font-black mb-6 shadow-lg shadow-violet-600/30 group-hover:scale-110 transition-transform">
+                        2</div>
+                    <h3 class="text-xl font-bold mb-3">AI Analysis</h3>
+                    <p class="text-slate-500">Our AI scans your documents to identify themes, data, and connections.</p>
+                </div>
+                <!-- Step 3 -->
+                <div class="text-center group" id="step-export">
+                    <div
+                        class="w-16 h-16 mx-auto rounded-2xl bg-cyan-600 text-white flex items-center justify-center text-2xl font-black mb-6 shadow-lg shadow-cyan-600/30 group-hover:scale-110 transition-transform">
+                        3</div>
+                    <h3 class="text-xl font-bold mb-3">Smart Export</h3>
+                    <p class="text-slate-500">Organize insights and export into your favorite writing tool or citation
+                        manager.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ TESTIMONIALS ═══ -->
+    <section id="testimonials" class="py-20 lg:py-28 bg-gradient-to-b from-slate-900 to-slate-800 text-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="text-3xl sm:text-4xl font-black tracking-tight mb-4">Trusted by world-class researchers</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="testimonial-card bg-slate-800/50 border border-slate-700/50 rounded-2xl p-8 transition-all duration-300 hover:bg-slate-800"
+                    id="testimonial-1">
+                    <div class="flex gap-1 mb-4">
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                    </div>
+                    <p class="text-slate-300 leading-relaxed mb-6">"NoteGenie has completely changed how I approach my
+                        literature reviews. What used to take days now takes hours."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-purple-600"></div>
+                        <div>
+                            <div class="font-bold text-sm">Sarah Johnson</div>
+                            <div class="text-xs text-slate-400">Ph.D. Candidate, Stanford</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Testimonial 2 -->
+                <div class="testimonial-card bg-slate-800/50 border border-slate-700/50 rounded-2xl p-8 transition-all duration-300 hover:bg-slate-800"
+                    id="testimonial-2">
+                    <div class="flex gap-1 mb-4">
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                    </div>
+                    <p class="text-slate-300 leading-relaxed mb-6">"The contextual linking feature is magic. It found
+                        connections in my notes that I hadn't realized were there."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-blue-600"></div>
+                        <div>
+                            <div class="font-bold text-sm">Michael Chen</div>
+                            <div class="text-xs text-slate-400">Research Scientist, DeepMind</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Testimonial 3 -->
+                <div class="testimonial-card bg-slate-800/50 border border-slate-700/50 rounded-2xl p-8 transition-all duration-300 hover:bg-slate-800"
+                    id="testimonial-3">
+                    <div class="flex gap-1 mb-4">
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                        <span class="material-symbols-outlined text-amber-400 text-lg"
+                            style="font-variation-settings:'FILL' 1">star</span>
+                    </div>
+                    <p class="text-slate-300 leading-relaxed mb-6">"Simple, powerful, and intuitive. It's the
+                        researcher's second brain I've been waiting for."</p>
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-600"></div>
+                        <div>
+                            <div class="font-bold text-sm">Dr. Elena Rodriguez</div>
+                            <div class="text-xs text-slate-400">Associate Professor, MIT</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ CTA ═══ -->
+    <section class="py-20 lg:py-28 bg-white">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8">
+            <div class="cta-gradient rounded-3xl p-12 lg:p-16 text-center text-white relative overflow-hidden">
+                <div class="blob bg-white/10 w-60 h-60 -top-10 -right-10"></div>
+                <div class="blob bg-white/10 w-40 h-40 bottom-0 left-10"></div>
+                <h2 class="text-3xl sm:text-4xl font-black mb-4 relative z-10">Ready to transform your research?</h2>
+                <p class="text-white/80 text-lg mb-8 max-w-xl mx-auto relative z-10">
+                    Join thousands of researchers and students who already use NoteGenie to work smarter.
+                </p>
+                <div class="flex flex-wrap gap-4 justify-center relative z-10">
+                    <a href="/login"
+                        class="px-8 py-4 bg-white text-primary font-bold rounded-xl shadow-xl hover:shadow-2xl transition-all transform hover:scale-105"
+                        id="cta-trial">
+                        Start Your Free Trial
+                    </a>
+                    <a href="#features"
+                        class="px-8 py-4 bg-white/20 text-white font-bold rounded-xl border border-white/30 hover:bg-white/30 transition-all"
+                        id="cta-demo">
+                        Book a Demo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ FOOTER ═══ -->
+    <footer class="bg-slate-900 text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center gap-2.5 mb-4">
+                        <div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+                            <span class="material-symbols-outlined text-sm"
+                                style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                        </div>
+                        <span class="text-lg font-extrabold">NoteGenie</span>
+                    </div>
+                    <p class="text-sm text-slate-400 leading-relaxed">AI-powered intelligence for the modern researcher.
+                        Organize, analyze, and synthesize knowledge faster than ever.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm mb-4">Product</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Integrations</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Pricing</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Changelog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm mb-4">Resources</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Documentation</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Community</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Research Tips</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm mb-4">Company</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="#" class="hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-xs text-slate-500">© 2024 NoteGenie AI Inc. All rights reserved.</p>
+                <div class="flex gap-6 text-xs text-slate-500">
+                    <a href="#" class="hover:text-white transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-white transition-colors">Cookies</a>
+                    <a href="#" class="hover:text-white transition-colors">Security</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.feature-card, .testimonial-card, [class*="step"]').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+    </script>
+</body>
+
+</html>

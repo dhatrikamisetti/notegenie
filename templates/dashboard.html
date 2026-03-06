@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NoteGenie — Dashboard</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { "primary": "#5048e5", "primary-light": "#7c75f0", "primary-dark": "#3730a3" },
+                    fontFamily: { "display": ["Inter", "sans-serif"] }
+                },
+            },
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .d1 {
+            animation-delay: .05s
+        }
+
+        .d2 {
+            animation-delay: .1s
+        }
+
+        .d3 {
+            animation-delay: .15s
+        }
+
+        .d4 {
+            animation-delay: .2s
+        }
+
+        .d5 {
+            animation-delay: .25s
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .project-card:hover {
+            border-color: #5048e5;
+            box-shadow: 0 8px 30px rgba(80, 72, 229, 0.1);
+        }
+
+        .doc-row:hover {
+            background: #f8f7ff;
+        }
+
+        .sidebar-link.active {
+            background: rgba(80, 72, 229, 0.1);
+            color: #5048e5;
+            font-weight: 700;
+        }
+
+        .sidebar-link:hover:not(.active) {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+        }
+
+        .upload-zone {
+            border: 2px dashed #cbd5e1;
+        }
+
+        .upload-zone.drag-over {
+            border-color: #5048e5;
+            background: rgba(80, 72, 229, 0.05);
+        }
+    </style>
+</head>
+
+<body class="bg-[#f7f7f9] font-display text-slate-900 antialiased">
+    <div class="flex min-h-screen">
+
+        <!-- ═══ SIDEBAR ═══ -->
+        <aside class="w-60 bg-white border-r border-slate-200 flex flex-col fixed h-full z-30">
+            <!-- Logo -->
+            <div class="px-5 py-5 flex items-center gap-2.5 border-b border-slate-100">
+                <div
+                    class="size-9 bg-primary rounded-xl flex items-center justify-center text-white shadow-md shadow-primary/20">
+                    <span class="material-symbols-outlined text-lg"
+                        style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                </div>
+                <div>
+                    <div class="text-lg font-extrabold tracking-tight leading-none">NoteGenie</div>
+                    <div class="text-[10px] font-bold text-primary tracking-wide">Pro Plan</div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 px-3 py-4 space-y-1">
+                <a href="/dashboard"
+                    class="sidebar-link active flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all"
+                    id="nav-dashboard">
+                    <span class="material-symbols-outlined text-xl"
+                        style="font-variation-settings:'FILL' 1">dashboard</span>
+                    Dashboard
+                </a>
+                <a href="/workspace"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-600 transition-all"
+                    id="nav-workspace">
+                    <span class="material-symbols-outlined text-xl">edit_note</span>
+                    Workspace
+                </a>
+                <a href="#"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-600 transition-all"
+                    id="nav-projects">
+                    <span class="material-symbols-outlined text-xl">folder</span>
+                    Projects
+                </a>
+                <a href="#"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-600 transition-all"
+                    id="nav-documents">
+                    <span class="material-symbols-outlined text-xl">description</span>
+                    Documents
+                </a>
+                <a href="#"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-600 transition-all"
+                    id="nav-notes">
+                    <span class="material-symbols-outlined text-xl"
+                        style="font-variation-settings:'FILL' 1">bookmark</span>
+                    Saved Notes
+                </a>
+            </nav>
+
+            <!-- Bottom Links -->
+            <div class="px-3 py-4 border-t border-slate-100 space-y-1">
+                <a href="/settings"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-500 transition-all"
+                    id="nav-settings">
+                    <span class="material-symbols-outlined text-xl">settings</span>
+                    Settings
+                </a>
+                <a href="/logout"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-500 hover:text-red-500 transition-all"
+                    id="nav-logout">
+                    <span class="material-symbols-outlined text-xl">logout</span>
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- ═══ MAIN ═══ -->
+        <div class="flex-1 ml-60">
+            <!-- Top Bar -->
+            <header class="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-slate-200">
+                <div class="flex items-center justify-between px-8 h-16">
+                    <div class="relative w-80">
+                        <span
+                            class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                        <input type="text" placeholder="Search notes, projects..." id="search-input"
+                            class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-100 border-0 text-sm focus:ring-2 focus:ring-primary/30 focus:bg-white transition-all outline-none" />
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button class="relative p-2 rounded-xl hover:bg-slate-100 transition-colors"
+                            id="btn-notifications">
+                            <span class="material-symbols-outlined text-slate-500 text-xl">notifications</span>
+                            <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                        </button>
+                        <div class="flex items-center gap-3 pl-4 border-l border-slate-200">
+                            <span class="text-sm font-semibold text-slate-700">{{ user.first_name or user.email
+                                }}</span>
+                            <div
+                                class="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center text-white text-sm font-bold">
+                                {{ (user.first_name or user.email)[0]|upper }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <main class="p-8">
+                <!-- Welcome Banner -->
+                <div
+                    class="fade-in bg-gradient-to-r from-primary via-violet-500 to-primary-dark rounded-2xl p-8 text-white mb-8 relative overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/3 translate-x-1/3">
+                    </div>
+                    <div class="absolute bottom-0 left-1/2 w-48 h-48 bg-white/5 rounded-full translate-y-1/2"></div>
+                    <div class="relative z-10">
+                        <h1 class="text-2xl font-extrabold mb-2" id="welcome-msg">Welcome back, {{ user.first_name or
+                            'User' }}!</h1>
+                        <p class="text-white/80 text-sm mb-6">You have {{ stats.active_projects }} active project{{ 's'
+                            if stats.active_projects != 1 else '' }} and {{ stats.total_notes }} saved notes waiting for
+                            your review.</p>
+                        <div class="flex flex-wrap gap-3">
+                            <button onclick="document.getElementById('upload-modal').classList.remove('hidden')"
+                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-white/15 hover:bg-white/25 border border-white/20 text-white font-semibold text-sm rounded-xl transition-all"
+                                id="btn-upload">
+                                <span class="material-symbols-outlined text-lg">upload_file</span>
+                                Upload Document
+                            </button>
+                            <button onclick="document.getElementById('project-modal').classList.remove('hidden')"
+                                class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-primary font-semibold text-sm rounded-xl hover:shadow-lg transition-all"
+                                id="btn-create-project">
+                                <span class="material-symbols-outlined text-lg">add_circle</span>
+                                Create Project
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div
+                        class="fade-in d1 stat-card bg-white rounded-2xl p-6 border border-slate-200 transition-all duration-300 cursor-default">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary text-xl"
+                                    style="font-variation-settings:'FILL' 1">description</span>
+                            </div>
+                            <span
+                                class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Active</span>
+                        </div>
+                        <div class="text-sm text-slate-500 font-medium">Total Documents</div>
+                        <div class="text-3xl font-black text-slate-900">{{ stats.total_documents }}</div>
+                    </div>
+                    <div
+                        class="fade-in d2 stat-card bg-white rounded-2xl p-6 border border-slate-200 transition-all duration-300 cursor-default">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="w-11 h-11 rounded-xl bg-violet-100 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-violet-600 text-xl"
+                                    style="font-variation-settings:'FILL' 1">folder_special</span>
+                            </div>
+                            <span
+                                class="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">Active</span>
+                        </div>
+                        <div class="text-sm text-slate-500 font-medium">Active Projects</div>
+                        <div class="text-3xl font-black text-slate-900">{{ stats.active_projects }}</div>
+                    </div>
+                    <div
+                        class="fade-in d3 stat-card bg-white rounded-2xl p-6 border border-slate-200 transition-all duration-300 cursor-default">
+                        <div class="flex items-start justify-between mb-3">
+                            <div class="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-amber-600 text-xl"
+                                    style="font-variation-settings:'FILL' 1">sticky_note_2</span>
+                            </div>
+                            <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">{{
+                                notes|length }} total</span>
+                        </div>
+                        <div class="text-sm text-slate-500 font-medium">Saved Notes</div>
+                        <div class="text-3xl font-black text-slate-900">{{ stats.total_notes }}</div>
+                    </div>
+                </div>
+
+                <!-- Two-Column Layout -->
+                <div class="grid lg:grid-cols-5 gap-8">
+                    <!-- Recent Projects -->
+                    <div class="lg:col-span-3 fade-in d4">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-bold">Recent Projects</h2>
+                        </div>
+                        {% if projects %}
+                        <div class="grid sm:grid-cols-2 gap-4">
+                            {% for project in projects[:4] %}
+                            <div class="project-card bg-white rounded-2xl p-5 border border-slate-200 transition-all duration-300 hover:cursor-pointer"
+                                id="project-{{ project.id }}">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-primary text-lg"
+                                            style="font-variation-settings:'FILL' 1">{{ project.icon }}</span>
+                                    </div>
+                                    <button data-id="{{ project.id }}" onclick="deleteProject(Number(this.dataset.id))"
+                                        class="p-1 rounded-lg hover:bg-red-50 text-slate-400 hover:text-red-500 transition-colors">
+                                        <span class="material-symbols-outlined text-lg">more_vert</span>
+                                    </button>
+                                </div>
+                                <h3 class="font-bold text-slate-900 mb-1">{{ project.name }}</h3>
+                                <p class="text-xs text-slate-500 mb-3 line-clamp-2">{{ project.description or 'No
+                                    description' }}</p>
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-1">
+                                        <span
+                                            class="material-symbols-outlined text-sm text-slate-400">description</span>
+                                        <span class="text-xs text-slate-400">{{ project.documents|length }} docs</span>
+                                    </div>
+                                    <span class="text-xs text-slate-400">{{ project.updated_at.strftime('%b %d')
+                                        }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="bg-white rounded-2xl p-8 border border-slate-200 text-center">
+                            <span class="material-symbols-outlined text-4xl text-slate-300 mb-2">folder_open</span>
+                            <p class="text-slate-500 text-sm">No projects yet. Create your first project to get started!
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Uploaded Documents -->
+                    <div class="lg:col-span-2 fade-in d5">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-bold">Uploaded Documents</h2>
+                        </div>
+                        <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                            {% if documents %}
+                            {% for doc in documents[:6] %}
+                            <a href="/workspace/{{ doc.id }}"
+                                class="doc-row flex items-center gap-3 p-4 border-b border-slate-100 last:border-0 transition-colors"
+                                id="doc-{{ doc.id }}">
+                                <div
+                                    class="w-10 h-10 rounded-xl flex items-center justify-center
+                                {% if doc.file_type == 'pdf' %}bg-red-100{% elif doc.file_type == 'docx' %}bg-blue-100{% else %}bg-slate-100{% endif %}">
+                                    <span
+                                        class="material-symbols-outlined text-lg
+                                    {% if doc.file_type == 'pdf' %}text-red-500{% elif doc.file_type == 'docx' %}text-blue-500{% else %}text-slate-500{% endif %}"
+                                        style="font-variation-settings:'FILL' 1">
+                                        {% if doc.file_type == 'pdf' %}picture_as_pdf{% elif doc.file_type == 'docx'
+                                        %}article{% else %}draft{% endif %}
+                                    </span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="text-sm font-semibold text-slate-800 truncate">{{ doc.original_filename
+                                        }}</div>
+                                    <div class="text-xs text-slate-400">{{ format_file_size(doc.file_size) }} • {{
+                                        doc.uploaded_at.strftime('%b %d, %Y') }}</div>
+                                </div>
+                                <span class="material-symbols-outlined text-slate-300 text-lg">chevron_right</span>
+                            </a>
+                            {% endfor %}
+                            {% else %}
+                            <div class="p-8 text-center">
+                                <span class="material-symbols-outlined text-4xl text-slate-300 mb-2">cloud_upload</span>
+                                <p class="text-slate-500 text-sm">No documents uploaded yet.</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ═══ UPLOAD MODAL ═══ -->
+    <div id="upload-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-overlay">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
+            onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+                <h3 class="text-lg font-bold">Upload Document</h3>
+                <button onclick="document.getElementById('upload-modal').classList.add('hidden')"
+                    class="p-1 rounded-lg hover:bg-slate-100">
+                    <span class="material-symbols-outlined text-slate-400">close</span>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="upload-form" enctype="multipart/form-data">
+                    <div class="upload-zone rounded-2xl p-10 text-center cursor-pointer mb-4 transition-all"
+                        id="drop-zone" ondragover="event.preventDefault(); this.classList.add('drag-over')"
+                        ondragleave="this.classList.remove('drag-over')" ondrop="handleDrop(event)"
+                        onclick="document.getElementById('file-input').click()">
+                        <span class="material-symbols-outlined text-4xl text-slate-400 mb-2">cloud_upload</span>
+                        <p class="text-sm font-semibold text-slate-600">Drag & drop your file here</p>
+                        <p class="text-xs text-slate-400 mt-1">or click to browse • PDF, DOCX, TXT, MD</p>
+                        <input type="file" id="file-input" name="file" accept=".pdf,.docx,.txt,.md" class="hidden"
+                            onchange="handleFileSelect(this)" />
+                    </div>
+                    <div id="file-preview" class="hidden mb-4 p-3 bg-slate-50 rounded-xl flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary">description</span>
+                        <span id="file-name" class="text-sm font-medium flex-1 truncate"></span>
+                        <button type="button" onclick="clearFile()" class="text-slate-400 hover:text-red-500">
+                            <span class="material-symbols-outlined text-lg">close</span>
+                        </button>
+                    </div>
+                    <div class="mb-4">
+                        <label class="text-sm font-semibold text-slate-700 mb-1 block">Assign to Project
+                            (optional)</label>
+                        <select name="project_id" id="upload-project"
+                            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none">
+                            <option value="">No project</option>
+                            {% for p in projects %}
+                            <option value="{{ p.id }}">{{ p.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" id="btn-upload-submit"
+                        class="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 rounded-xl shadow-lg shadow-primary/20 transition-all disabled:opacity-50"
+                        disabled>
+                        Upload Document
+                    </button>
+                </form>
+                <div id="upload-progress" class="hidden mt-4">
+                    <div class="h-2 bg-slate-200 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="h-full bg-primary rounded-full transition-all" style="width: 0%">
+                        </div>
+                    </div>
+                    <p id="upload-status" class="text-xs text-slate-500 mt-2 text-center">Uploading...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ CREATE PROJECT MODAL ═══ -->
+    <div id="project-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center modal-overlay">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden"
+            onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+                <h3 class="text-lg font-bold">Create New Project</h3>
+                <button onclick="document.getElementById('project-modal').classList.add('hidden')"
+                    class="p-1 rounded-lg hover:bg-slate-100">
+                    <span class="material-symbols-outlined text-slate-400">close</span>
+                </button>
+            </div>
+            <div class="p-6">
+                <form id="project-form">
+                    <div class="mb-4">
+                        <label class="text-sm font-semibold text-slate-700 mb-1 block">Project Name</label>
+                        <input type="text" name="name" id="project-name" required
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                            placeholder="Enter project name" />
+                    </div>
+                    <div class="mb-6">
+                        <label class="text-sm font-semibold text-slate-700 mb-1 block">Description</label>
+                        <textarea name="description" id="project-desc" rows="3"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none"
+                            placeholder="What's this project about?"></textarea>
+                    </div>
+                    <button type="submit" id="btn-create-project-submit"
+                        class="w-full bg-primary hover:bg-primary-dark text-white font-bold py-3 rounded-xl shadow-lg shadow-primary/20 transition-all">
+                        Create Project
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── File Upload ──
+        function handleFileSelect(input) {
+            if (input.files.length > 0) {
+                showFilePreview(input.files[0]);
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.target.closest('.upload-zone').classList.remove('drag-over');
+            if (e.dataTransfer.files.length > 0) {
+                document.getElementById('file-input').files = e.dataTransfer.files;
+                showFilePreview(e.dataTransfer.files[0]);
+            }
+        }
+
+        function showFilePreview(file) {
+            document.getElementById('file-name').textContent = file.name;
+            document.getElementById('file-preview').classList.remove('hidden');
+            document.getElementById('btn-upload-submit').disabled = false;
+        }
+
+        function clearFile() {
+            document.getElementById('file-input').value = '';
+            document.getElementById('file-preview').classList.add('hidden');
+            document.getElementById('btn-upload-submit').disabled = true;
+        }
+
+        document.getElementById('upload-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            const fileInput = document.getElementById('file-input');
+            const projectId = document.getElementById('upload-project').value;
+
+            formData.append('file', fileInput.files[0]);
+            if (projectId) formData.append('project_id', projectId);
+
+            document.getElementById('upload-progress').classList.remove('hidden');
+            document.getElementById('btn-upload-submit').disabled = true;
+
+            try {
+                const response = await fetch('/api/upload', { method: 'POST', body: formData });
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('progress-bar').style.width = '100%';
+                    document.getElementById('upload-status').textContent = '✓ Uploaded successfully!';
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    document.getElementById('upload-status').textContent = '✗ ' + (data.error || 'Upload failed');
+                    document.getElementById('btn-upload-submit').disabled = false;
+                }
+            } catch (err) {
+                document.getElementById('upload-status').textContent = '✗ Network error';
+                document.getElementById('btn-upload-submit').disabled = false;
+            }
+        });
+
+        // ── Create Project ──
+        document.getElementById('project-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('project-name').value;
+            const description = document.getElementById('project-desc').value;
+
+            try {
+                const response = await fetch('/api/projects', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, description })
+                });
+                if (response.ok) {
+                    location.reload();
+                }
+            } catch (err) {
+                alert('Failed to create project');
+            }
+        });
+
+        // ── Delete Project ──
+        async function deleteProject(id) {
+            if (!confirm('Delete this project and all its documents?')) return;
+            try {
+                const response = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+                if (response.ok) location.reload();
+            } catch (err) {
+                alert('Failed to delete project');
+            }
+        }
+
+        // ── Close modals on overlay click ──
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) modal.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+
+</html>

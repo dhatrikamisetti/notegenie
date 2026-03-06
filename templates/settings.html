@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>NoteGenie — Settings</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { "primary": "#5048e5", "primary-light": "#7c75f0", "primary-dark": "#3730a3" },
+                    fontFamily: { "display": ["Inter", "sans-serif"] }
+                },
+            },
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .d1 {
+            animation-delay: .05s
+        }
+
+        .d2 {
+            animation-delay: .1s
+        }
+
+        .d3 {
+            animation-delay: .15s
+        }
+
+        .settings-link.active {
+            background: rgba(80, 72, 229, 0.1);
+            color: #5048e5;
+            font-weight: 700;
+        }
+
+        .settings-link:hover:not(.active) {
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .toggle-switch {
+            width: 44px;
+            height: 24px;
+            border-radius: 12px;
+            padding: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.on {
+            background: #5048e5;
+        }
+
+        .toggle-switch.off {
+            background: #cbd5e1;
+        }
+
+        .toggle-switch .dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 10px;
+            background: white;
+            transition: all 0.3s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.on .dot {
+            transform: translateX(20px);
+        }
+
+        .theme-card {
+            cursor: pointer;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .theme-card.active {
+            border-color: #5048e5;
+            box-shadow: 0 0 0 3px rgba(80, 72, 229, 0.15);
+        }
+
+        .theme-card:hover:not(.active) {
+            border-color: #94a3b8;
+        }
+
+        .toast {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+
+<body class="bg-[#f7f7f9] font-display text-slate-900 antialiased" data-theme="{{ user.theme }}">
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+        <div class="flex items-center justify-between px-6 md:px-8 h-16">
+            <div class="flex items-center gap-6">
+                <a href="/dashboard" class="flex items-center gap-2.5 group" id="logo-link">
+                    <div
+                        class="size-8 bg-primary rounded-lg flex items-center justify-center text-white shadow-md shadow-primary/20">
+                        <span class="material-symbols-outlined text-sm"
+                            style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                    </div>
+                    <span class="text-lg font-extrabold tracking-tight">NoteGenie</span>
+                </a>
+            </div>
+            <div class="relative w-72 hidden md:block">
+                <span
+                    class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                <input type="text" placeholder="Search settings..."
+                    class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-100 border-0 text-sm focus:ring-2 focus:ring-primary/30 focus:bg-white transition-all outline-none"
+                    id="search-settings" />
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="relative p-2 rounded-xl hover:bg-slate-100 transition-colors">
+                    <span class="material-symbols-outlined text-slate-500 text-xl">notifications</span>
+                </button>
+                <button class="relative p-2 rounded-xl hover:bg-slate-100 transition-colors">
+                    <span class="material-symbols-outlined text-slate-500 text-xl">help</span>
+                </button>
+                <div
+                    class="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center text-white text-sm font-bold ml-2">
+                    {{ (user.first_name or user.email)[0]|upper }}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-6 md:px-8 py-8">
+        <div class="flex gap-8">
+            <!-- ═══ SETTINGS SIDEBAR ═══ -->
+            <aside class="w-64 flex-shrink-0">
+                <h1 class="text-2xl font-extrabold mb-1">Settings</h1>
+                <p class="text-sm text-slate-500 mb-6">Manage your workspace and profile</p>
+                <nav class="space-y-1">
+                    <a href="#profile"
+                        class="settings-link active flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm transition-all"
+                        id="link-profile">
+                        <span class="material-symbols-outlined text-xl"
+                            style="font-variation-settings:'FILL' 1">person</span>
+                        Profile Settings
+                    </a>
+                    <a href="#appearance"
+                        class="settings-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-slate-600 transition-all"
+                        id="link-appearance">
+                        <span class="material-symbols-outlined text-xl">palette</span>
+                        Appearance
+                    </a>
+                    <a href="#notifications"
+                        class="settings-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-slate-600 transition-all"
+                        id="link-notifications">
+                        <span class="material-symbols-outlined text-xl">notifications</span>
+                        Notifications
+                    </a>
+                    <a href="#security"
+                        class="settings-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-slate-600 transition-all"
+                        id="link-security">
+                        <span class="material-symbols-outlined text-xl">lock</span>
+                        Security & Privacy
+                    </a>
+                    <a href="#billing"
+                        class="settings-link flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-slate-600 transition-all"
+                        id="link-billing">
+                        <span class="material-symbols-outlined text-xl">credit_card</span>
+                        Billing & Plans
+                    </a>
+                </nav>
+                <div class="mt-8">
+                    <a href="/logout"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm text-red-500 hover:bg-red-50 transition-all"
+                        id="link-signout">
+                        <span class="material-symbols-outlined text-xl">logout</span>
+                        Sign Out
+                    </a>
+                </div>
+            </aside>
+
+            <!-- ═══ SETTINGS CONTENT ═══ -->
+            <div class="flex-1 min-w-0">
+                <!-- Profile Header Card -->
+                <div class="fade-in bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+                    <div class="flex items-center gap-5">
+                        <div class="relative">
+                            <div
+                                class="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-violet-600 flex items-center justify-center text-white text-2xl font-bold">
+                                {{ (user.first_name or user.email)[0]|upper }}{{ (user.last_name or '')[0:1]|upper }}
+                            </div>
+                            <button
+                                class="absolute bottom-0 right-0 w-7 h-7 bg-primary text-white rounded-full flex items-center justify-center shadow-md hover:bg-primary-dark transition-colors"
+                                id="btn-edit-avatar">
+                                <span class="material-symbols-outlined text-sm">edit</span>
+                            </button>
+                        </div>
+                        <div class="flex-1">
+                            <h2 class="text-lg font-bold">{{ user.first_name }} {{ user.last_name }}</h2>
+                            <p class="text-sm text-slate-500">{{ user.email }}</p>
+                            <span
+                                class="inline-block mt-1 text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full tracking-wide">Pro
+                                Member</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <button
+                                class="px-4 py-2 text-sm font-semibold text-slate-600 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all"
+                                id="btn-preview">
+                                Preview Profile
+                            </button>
+                            <button onclick="saveSettings()"
+                                class="px-5 py-2 text-sm font-bold text-white bg-primary rounded-xl shadow-md shadow-primary/20 hover:bg-primary-dark transition-all"
+                                id="btn-save-top">
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Information -->
+                <div class="fade-in d1 bg-white rounded-2xl border border-slate-200 p-6 mb-6" id="profile">
+                    <h3 class="text-lg font-bold mb-6">Personal Information</h3>
+                    <div class="grid md:grid-cols-2 gap-5 mb-5">
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700 mb-1.5 block">First Name</label>
+                            <input type="text" id="setting-fname" value="{{ user.first_name }}"
+                                class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" />
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700 mb-1.5 block">Last Name</label>
+                            <input type="text" id="setting-lname" value="{{ user.last_name }}"
+                                class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all" />
+                        </div>
+                    </div>
+                    <div class="mb-5">
+                        <label class="text-sm font-semibold text-slate-700 mb-1.5 block">Email Address</label>
+                        <input type="email" value="{{ user.email }}" disabled
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-100 text-sm text-slate-500 outline-none cursor-not-allowed" />
+                        <p class="text-xs text-slate-400 mt-1.5">Email cannot be changed. Contact support for help.</p>
+                    </div>
+                    <div>
+                        <label class="text-sm font-semibold text-slate-700 mb-1.5 block">Bio</label>
+                        <textarea id="setting-bio" rows="3"
+                            class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none resize-none transition-all"
+                            placeholder="Tell us about yourself...">{{ user.bio }}</textarea>
+                    </div>
+                </div>
+
+                <!-- Appearance -->
+                <div class="fade-in d2 bg-white rounded-2xl border border-slate-200 p-6 mb-6" id="appearance">
+                    <h3 class="text-lg font-bold mb-6">Appearance</h3>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="theme-card {% if user.theme == 'light' %}active{% endif %}"
+                            onclick="setTheme('light')" id="theme-light">
+                            <div class="h-28 bg-slate-100 p-4 relative">
+                                <div class="w-full h-3 bg-slate-200 rounded-full mb-2"></div>
+                                <div class="w-3/4 h-3 bg-slate-200 rounded-full mb-2"></div>
+                                <div class="w-1/2 h-3 bg-slate-200 rounded-full"></div>
+                                {% if user.theme == 'light' %}
+                                <div
+                                    class="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-white text-xs"
+                                        style="font-variation-settings:'FILL' 1">check</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="p-3 text-center text-sm font-semibold">Light Mode</div>
+                        </div>
+                        <div class="theme-card {% if user.theme == 'dark' %}active{% endif %}"
+                            onclick="setTheme('dark')" id="theme-dark">
+                            <div class="h-28 bg-slate-800 p-4 relative">
+                                <div class="w-full h-3 bg-slate-700 rounded-full mb-2"></div>
+                                <div class="w-3/4 h-3 bg-slate-700 rounded-full mb-2"></div>
+                                <div class="w-1/2 h-3 bg-slate-700 rounded-full"></div>
+                                {% if user.theme == 'dark' %}
+                                <div
+                                    class="absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-white text-xs"
+                                        style="font-variation-settings:'FILL' 1">check</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="p-3 text-center text-sm font-semibold">Dark Mode</div>
+                        </div>
+                        <div class="theme-card {% if user.theme == 'system' %}active{% endif %}"
+                            onclick="setTheme('system')" id="theme-system">
+                            <div class="h-28 relative overflow-hidden">
+                                <div class="absolute inset-0 bg-slate-100 w-1/2"></div>
+                                <div class="absolute inset-0 left-1/2 bg-slate-800"></div>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-3xl text-slate-500">devices</span>
+                                </div>
+                            </div>
+                            <div class="p-3 text-center text-sm font-semibold">System Default</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Preferences -->
+                <div class="fade-in d3 bg-white rounded-2xl border border-slate-200 p-6 mb-6" id="notifications">
+                    <h3 class="text-lg font-bold mb-6">Notification Preferences</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-slate-50">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-primary text-lg"
+                                        style="font-variation-settings:'FILL' 1">email</span>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-semibold">Email Notifications</div>
+                                    <div class="text-xs text-slate-500">Weekly summaries and product updates</div>
+                                </div>
+                            </div>
+                            <div class="toggle-switch on" onclick="toggleSwitch(this)" id="toggle-email">
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-slate-50">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-violet-600 text-lg"
+                                        style="font-variation-settings:'FILL' 1">chat</span>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-semibold">Direct Messages</div>
+                                    <div class="text-xs text-slate-500">Alerts for new messages from collaborators</div>
+                                </div>
+                            </div>
+                            <div class="toggle-switch on" onclick="toggleSwitch(this)" id="toggle-dm">
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-slate-50">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-amber-600 text-lg"
+                                        style="font-variation-settings:'FILL' 1">campaign</span>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-semibold">Feature Announcements</div>
+                                    <div class="text-xs text-slate-500">Be the first to know about new AI tools</div>
+                                </div>
+                            </div>
+                            <div class="toggle-switch off" onclick="toggleSwitch(this)" id="toggle-announcements">
+                                <div class="dot"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-6 mb-6" id="security">
+                    <h3 class="text-lg font-bold mb-6">Security & Privacy</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700 mb-1.5 block">Current Password</label>
+                            <input type="password" id="current-password"
+                                class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                                placeholder="Enter current password" />
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-slate-700 mb-1.5 block">New Password</label>
+                            <input type="password" id="new-password"
+                                class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/50 text-sm focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+                                placeholder="Enter new password (min 6 characters)" />
+                        </div>
+                        <button onclick="changePassword()"
+                            class="px-5 py-2.5 text-sm font-bold text-white bg-primary rounded-xl shadow-md shadow-primary/20 hover:bg-primary-dark transition-all"
+                            id="btn-change-password">
+                            Update Password
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-end gap-3 mb-12">
+                    <button
+                        class="px-5 py-2.5 text-sm font-semibold text-slate-600 border border-slate-200 rounded-xl hover:bg-slate-50 transition-all"
+                        id="btn-reset">
+                        Reset to Defaults
+                    </button>
+                    <button onclick="saveSettings()"
+                        class="px-6 py-2.5 text-sm font-bold text-white bg-primary rounded-xl shadow-lg shadow-primary/20 hover:bg-primary-dark transition-all"
+                        id="btn-save-all">
+                        Save All Changes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="hidden fixed bottom-6 right-6 z-50 toast">
+        <div
+            class="flex items-center gap-3 px-5 py-3 bg-slate-900 text-white text-sm font-medium rounded-xl shadow-2xl">
+            <span class="material-symbols-outlined text-emerald-400 text-lg"
+                style="font-variation-settings:'FILL' 1">check_circle</span>
+            <span id="toast-message">Settings saved successfully!</span>
+        </div>
+    </div>
+
+    <script>
+        let selectedTheme = document.body.dataset.theme || 'light';
+
+        function toggleSwitch(el) {
+            el.classList.toggle('on');
+            el.classList.toggle('off');
+        }
+
+        function setTheme(theme) {
+            selectedTheme = theme;
+            document.querySelectorAll('.theme-card').forEach(c => {
+                c.classList.remove('active');
+                const check = c.querySelector('.absolute.top-2');
+                if (check) check.remove();
+            });
+            const card = document.getElementById('theme-' + theme);
+            card.classList.add('active');
+            // Add checkmark
+            const preview = card.querySelector('div');
+            const checkDiv = document.createElement('div');
+            checkDiv.className = 'absolute top-2 right-2 w-5 h-5 bg-primary rounded-full flex items-center justify-center';
+            checkDiv.innerHTML = '<span class="material-symbols-outlined text-white text-xs" style="font-variation-settings:\'FILL\' 1">check</span>';
+            preview.style.position = 'relative';
+            preview.appendChild(checkDiv);
+        }
+
+        async function saveSettings() {
+            const data = {
+                first_name: document.getElementById('setting-fname').value,
+                last_name: document.getElementById('setting-lname').value,
+                bio: document.getElementById('setting-bio').value,
+                theme: selectedTheme
+            };
+
+            try {
+                const res = await fetch('/api/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (res.ok) {
+                    showToast('Settings saved successfully!');
+                } else {
+                    showToast('Failed to save settings');
+                }
+            } catch (err) {
+                showToast('Network error');
+            }
+        }
+
+        async function changePassword() {
+            const current = document.getElementById('current-password').value;
+            const newPass = document.getElementById('new-password').value;
+
+            if (!current || !newPass) {
+                showToast('Please fill in both password fields');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/settings/password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ current_password: current, new_password: newPass })
+                });
+                const data = await res.json();
+                showToast(data.message || data.error);
+                if (res.ok) {
+                    document.getElementById('current-password').value = '';
+                    document.getElementById('new-password').value = '';
+                }
+            } catch (err) {
+                showToast('Network error');
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3000);
+        }
+
+        // Highlight active settings section on scroll
+        const sections = ['profile', 'appearance', 'notifications', 'security', 'billing'];
+        const links = sections.map(s => document.getElementById('link-' + s.replace('&', ''))).filter(Boolean);
+    </script>
+</body>
+
+</html>
